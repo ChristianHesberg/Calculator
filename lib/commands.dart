@@ -35,3 +35,4 @@ class Divide extends Command{
     return first / double.parse(input);
   }
 }
+

@@ -6,7 +6,7 @@ class Calculator{
     "+" : Add(),
     "-" : Subtract(),
     "*" : Multiply(),
-    "/" : Divide()
+    "/" : Divide(),
   };
 
   void push(double value) => _stack.add(value);

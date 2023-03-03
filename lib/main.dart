@@ -90,36 +90,31 @@ class _HomePageState extends State<HomePage> {
                           _getButton("7"),
                           _getButton("8"),
                           _getButton("9"),
+                          _getCommandButton("+")
                         ]),
                         Row(children: [
                           _getButton("4"),
                           _getButton("5"),
                           _getButton("6"),
+                          _getCommandButton("-")
+                        ]),
+                        Row(children: [
+                          _getButton("1"),
+                          _getButton("2"),
+                          _getButton("3"),
+                          _getCommandButton("*")
+                        ]),
+                        Row(children: [
+                          _getButton("0"),
+                          _getButton("00"),
+                          _getButton("."),
+                          _getCommandButton("/")
                         ]),
                         Row(
-                            children: [
-                              _getButton("1"),
-                              _getButton("2"),
-                              _getButton("3"),
-                            ]
-                        ),
-                        Row(
-                            children: [
-                              _getButton(0),
-                            ]
+                          children: _getMiscCommands(),
                         )
                       ]),
                 ),
-                SizedBox(
-                  width: 100,
-                  height: 590,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: _getCommands(),
-                  ),
-                )
               ],
             ),
           )
@@ -145,47 +140,77 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<ElevatedButton> _getCommand() {
-    Iterable<String> keys = calculator.commands.keys;
-    Iterable<Command> commands = calculator.commands.values;
+  Container _getCommandButton(String command) {
+    Command? calcCommand = calculator.commands[command];
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 85,
+        height: 70,
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              if (calcCommand != null) {
+                firstField =
+                    calcCommand.calculate(calculator, firstField).toString();
+              }
+            });
+          },
+          child: Text(command),
+        ),
+      ),
+    );
+  }
 
-    List<ElevatedButton> commandButtons = List.generate(
-        calculator.commands.length,
-        (index) => ElevatedButton(
+  List<Container> _getMiscCommands() {
+    List<Container> commandButtons = [];
+
+    commandButtons.add(Container(
+      margin: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 85,
+        height: 70,
+        child: ElevatedButton(
             onPressed: () {
               setState(() {
-                firstField = commands
-                    .elementAt(index)
-                    .calculate(calculator, firstField)
-                    .toString();
+                if (firstField.length > 0) {
+                  firstField = firstField.substring(0, firstField.length - 1);
+                }
               });
             },
-            child: Text(keys.elementAt(index))));
-    commandButtons.add(ElevatedButton(
-        onPressed: () {
-          setState(() {
-            calculator.push(double.parse(firstField));
-            firstField = "";
-          });
-        },
-        child: Text("ENTER")));
-    commandButtons.add(ElevatedButton(
-        onPressed: () {
-          setState(() {
-            if (firstField.length > 0) {
-              firstField = firstField.substring(0, firstField.length - 1);
-            }
-          });
-        },
-        child: Text("DEL")));
-    commandButtons.add(ElevatedButton(
-        onPressed: () {
-          setState(() {
-            firstField = "";
-            calculator.clear();
-          });
-        },
-        child: Text("CLEAR")));
+            child: Text("DEL")),
+      ),
+    ));
+    commandButtons.add(Container(
+      margin: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 85,
+        height: 70,
+        child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                firstField = "";
+                calculator.clear();
+              });
+            },
+            child: Text("CLEAR")),
+      ),
+    ));
+    commandButtons.add(Container(
+      margin: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 85,
+        height: 70,
+        child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                calculator.push(double.parse(firstField));
+                firstField = "";
+              });
+            },
+            child: Text("ENTER")),
+      ),
+    ));
     return commandButtons;
   }
 }
