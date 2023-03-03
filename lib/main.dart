@@ -32,34 +32,10 @@ class _HomePageState extends State<HomePage> {
   var secondField = "";
   var thirdField = "";
 
-  final List<String> buttons = [
-    'C',
-    'DEL',
-    '',
-    '+',
-    '7',
-    '8',
-    '9',
-    '-',
-    '4',
-    '5',
-    '6',
-    '*',
-    '1',
-    '2',
-    '3',
-    '/',
-    '0',
-    '.',
-    '',
-    '='
-  ];
-
   @override
   Widget build(BuildContext context) {
     secondField = calculator.getElementByIndex(0).toString();
     thirdField = calculator.getElementByIndex(1).toString();
-
 
     return Scaffold(
       appBar: AppBar(
@@ -106,27 +82,42 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: GridView.count(
-                            crossAxisCount: 3,
-                            children: _getNumbers(),
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(children: [
+                          _getButton("7"),
+                          _getButton("8"),
+                          _getButton("9"),
+                        ]),
+                        Row(children: [
+                          _getButton("4"),
+                          _getButton("5"),
+                          _getButton("6"),
+                        ]),
+                        Row(
+                            children: [
+                              _getButton("1"),
+                              _getButton("2"),
+                              _getButton("3"),
+                            ]
                         ),
-                      ),
-                    ],
-                  ),
+                        Row(
+                            children: [
+                              _getButton(0),
+                            ]
+                        )
+                      ]),
                 ),
                 SizedBox(
                   width: 100,
                   height: 590,
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: _getCommands(),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: _getCommands(),
                   ),
                 )
               ],
@@ -137,62 +128,52 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<ElevatedButton> _getNumbers() {
-    List<ElevatedButton> buttons = List.generate(
-        9,
-            (index) => ElevatedButton(
+  Container _getButton(String number) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 85,
+        height: 70,
+        child: ElevatedButton(
             onPressed: () {
               setState(() {
-                firstField =
-                    firstField + (index+1).toString();
+                firstField = firstField + number;
               });
             },
-            child: Text("${index+1}"))
+            child: Text(number)),
+      ),
     );
-    buttons.add(ElevatedButton(
-        onPressed: () {
-          setState(() {
-            firstField =
-                firstField + 0.toString();
-          });
-        },
-        child: Text("0")));
-
-    return buttons;
   }
 
-  List<ElevatedButton> _getCommands(){
-
+  List<ElevatedButton> _getCommand() {
     Iterable<String> keys = calculator.commands.keys;
     Iterable<Command> commands = calculator.commands.values;
 
     List<ElevatedButton> commandButtons = List.generate(
         calculator.commands.length,
-            (index) => ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    firstField = commands
-                        .elementAt(index)
-                        .calculate(calculator, firstField)
-                        .toString();
-                  });
-                },
-                child: Text(keys.elementAt(index)))
-    );
+        (index) => ElevatedButton(
+            onPressed: () {
+              setState(() {
+                firstField = commands
+                    .elementAt(index)
+                    .calculate(calculator, firstField)
+                    .toString();
+              });
+            },
+            child: Text(keys.elementAt(index))));
     commandButtons.add(ElevatedButton(
         onPressed: () {
           setState(() {
             calculator.push(double.parse(firstField));
-            firstField ="";
+            firstField = "";
           });
         },
         child: Text("ENTER")));
     commandButtons.add(ElevatedButton(
         onPressed: () {
           setState(() {
-            if(firstField.length > 0){
-              firstField =
-                  firstField.substring(0, firstField.length - 1);
+            if (firstField.length > 0) {
+              firstField = firstField.substring(0, firstField.length - 1);
             }
           });
         },
@@ -200,7 +181,7 @@ class _HomePageState extends State<HomePage> {
     commandButtons.add(ElevatedButton(
         onPressed: () {
           setState(() {
-            firstField ="";
+            firstField = "";
             calculator.clear();
           });
         },
