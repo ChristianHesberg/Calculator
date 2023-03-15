@@ -7,6 +7,7 @@ class CalculatorModel extends ChangeNotifier{
   String number = "";
 
   clear(){
+    calculator.clear();
     number = "";
     notifyListeners();
   }
@@ -32,6 +33,7 @@ class CalculatorModel extends ChangeNotifier{
   enter() {
     if(double.tryParse(number) != null){
       calculator.push(double.parse(number));
+      number= "";
       notifyListeners();
     }
   }
